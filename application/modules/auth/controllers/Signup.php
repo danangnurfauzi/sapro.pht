@@ -27,7 +27,7 @@ class Signup extends MX_controller
 	{
 		//echo $_POST['npk'];
 		$check = $this->rest->get($this->api.'checkNpk',array('npk'=>$_POST['npk']),'application/json');
-		
+		print_r($check);exit;
 		if ($check->status == 'true')
 		{
 
