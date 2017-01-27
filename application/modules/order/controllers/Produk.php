@@ -20,6 +20,8 @@ class Produk extends MX_controller
 		{
 			redirect('auth/login');
 		}
+
+		$this->load->library('Cart');
 	}
 
 	function index()
@@ -131,7 +133,71 @@ class Produk extends MX_controller
 	 
 	}
 
-	
+	function cartList()
+	{
+		$data['produk'] = $this->db->query('SELECT * FROM produk_barang JOIN produk_kategori ON pk_id = pb_pk_id');
+		$this->load->view('cartList_view',$data);
+	}
+
+	function addCart()
+	{
+		$data = array(
+		        'id'      => $_POST['id'],
+		        'qty'     => $_POST['qty'],
+		        'price'   => $_POST['price'],
+		        'name'    => $_POST['name']
+		);
+
+		$this->cart->insert($data);
+		redirect('order/produk/cartList');
+	}
+
+	function hapusCartItem( $rowid )
+	{
+		$this->cart->remove($rowid);
+		redirect('order/produk/cartList');
+	}
+
+	function emptyCart()
+	{
+		$this->cart->destroy();
+		redirect('order/produk/cartList');
+	}
+
+	function updateCart()
+	{
+		//print_r($_POST);exit;
+		if ($_POST['updateList'] == 'PERBAHARUI KERANJANG')
+		{
+			
+			$countArray = count($_POST['qty']);
+			//echo $countArray;exit;
+
+			for ($i=0; $i < $countArray; $i++)
+			{ 
+				$data[] = 
+
+							array(
+
+									'rowid' => $_POST['rowid'][$i],
+									'qty' => $_POST['qty'][$i]
+
+								);
+
+						
+			}
+			//echo "<pre>";
+			//print_r($data);exit;
+			$this->cart->update($data);
+			redirect('order/produk/cartList');
+
+		}
+		else
+		{
+			echo "<pre>";
+			print_r($_POST);
+		}
+	}
 }
 
 ?>
